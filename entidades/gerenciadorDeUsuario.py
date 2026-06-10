@@ -121,7 +121,8 @@ def CriaUsuario(u: dict, email: str):
         "email": str(u.get("email")).strip(), 
         "nome": str(u.get("nome")).strip(), 
         "idade": int(u.get("idade")), 
-        "aporte": str(u.get("perfil")).strip().lower()
+        "aporte": float(u.get("aporte")),
+        "perfil": str(u.get("perfil")).strip().lower()
     }
     
     return 0 
