@@ -1,8 +1,9 @@
 import unittest 
-from gerenciador_usuario import *
+from entidades.gerenciadorDeUsuario import *
 
 class TestGerenciadorUsuario(unittest.TestCase):
 
+   
     def test_01_validar_usuario_ok_condicao_retorno(self):
         print("Caso de Teste 01 - Validação dados válidos")
         usuario = {
@@ -50,6 +51,20 @@ class TestGerenciadorUsuario(unittest.TestCase):
     def test_05_validar_email_existe_ok(self):
         print("Caso de Teste 05 - Verificação se email que existe no sistema")
 
+        #cria usuário 
+
+        usuario = {
+        "email": "ana@gmail.com",
+        "nome": "Ana",
+        "idade": 30,
+        "aporte": 500.0,
+        "perfil": "moderado"
+        }
+
+        #insere primeiro para o email existir nos dados
+
+        CriaUsuario("ana@gmail.com", usuario)
+        
         retorno_esperado =  VerificaExistenciaEmail("ana@gmail.com")
         self.assertEqual(retorno_esperado, 0)
     
@@ -59,8 +74,11 @@ class TestGerenciadorUsuario(unittest.TestCase):
         retorno_esperado =  VerificaExistenciaEmail("carlos@gmail.com")
         self.assertEqual(retorno_esperado, 1)
     
-    #COMO FAZER ESSE??
-    #def test_07_validar_email_arq_nao_existente(self):
+    
+    def test_07_validar_email_arq_nao_existente(self):
+        print("Caso de Teste 07 - Verificação quando a estrutura de dados está vazia")
+        retorno_esperado = VerificaExistenciaEmail("ana@gmail.com")
+        self.assertEqual(retorno_esperado, 1)
 
     def test_08_criar_usuario_novo_ok(self):
         print("Caso de Teste 08 - Cria novo usuário")
@@ -73,6 +91,8 @@ class TestGerenciadorUsuario(unittest.TestCase):
         }
         retorno_esperado =  CriaUsuario("ana@gmail.com", usuario)
         self.assertEqual(retorno_esperado, 0)
+
+        self.assertIn("ana@gmail.com", obter_todos_usuarios())
     
     def test_09_criar_usuario_campos_obrigatórios_vazios(self):
         print("Caso de Teste 09 - Tenta criar usuário com campos obrigatórios vazios")
@@ -83,7 +103,7 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "perfil": "moderado"
         }
         retorno_esperado =  CriaUsuario("ana@gmail.com", usuario)
-        self.assertEqual(retorno_esperado, 1)
+        self.assertEqual(retorno_esperado, 2)
     
     def test_10_criar_usuario_já_existente(self):
         print("Caso de Teste 10 - Tenta criar usuário já existente no sistema")
@@ -99,9 +119,9 @@ class TestGerenciadorUsuario(unittest.TestCase):
     
     def test_11_busca_usuario_existente(self):
         print("Caso de Teste 11 - Busca Usuário já cadastrado no sistema")
-        resultado = CarregaPerfilNoArq("ana@gmail.com")
+        resultado = ConsultaUsuario("ana@gmail.com")
 
-        retorno_esperado == {
+        retorno_esperado = {
         "email": "ana@gmail.com",
         "nome": "Ana",
         "idade": 30,
@@ -112,7 +132,7 @@ class TestGerenciadorUsuario(unittest.TestCase):
     
     def test_12_busca_usuario_nao_existente(self):
         print("Caso de Teste 12 - Busca usuário não cadastrado no sistema")
-        resultado = CarregaPerfilNoArq("carlos@gmail.com")
+        resultado = ConsultaUsuario("carlos@gmail.com")
 
         self.assertEqual(resultado, {})
     
