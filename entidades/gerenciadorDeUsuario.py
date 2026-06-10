@@ -1,15 +1,16 @@
 #Apresenta a lista de funções a serem disponibilizadas pelo módulo
-__all__ = ["ValidarDados", "VerificaExistenciaEmail", "CriaUsuario", "ConsultaUsuario", "AtualizaUsuario"] 
+__all__ = ["ValidarDados", "VerificaExistenciaEmail", "CriaUsuario", "ConsultaUsuario", "AtualizaUsuario", "obterTodosUsuarios", "carregarTodosUsuarios" ] 
 
 usuarios = {}
 
-# def obterTodosUsuarios() -> dict:
-#     return usuarios
+def obterTodosUsuarios() -> dict:
+    return usuarios
     
-# def limpar_memoria():
-#     global usuarios
-#     usuarios ={}
-
+def carregarTodosUsuarios(dadosCarregados: dict):
+    global usuarios
+    usuarios.clear()
+    usuarios.update(dadosCarregados)
+  
 
 def ValidarDados(u: dict) -> int:
 
