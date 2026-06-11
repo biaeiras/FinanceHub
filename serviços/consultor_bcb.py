@@ -39,7 +39,7 @@ def obterValorIndicador(nome_indicador: str)-> float :
             valor = dados[0]["valor"] 
 
             #TESTAR SE ESSE DADO PRECISA SER TRATADO 
-
+            valor_tratado = str(valor).replace(",", ".")
             valor_float = float(valor)
 
             return valor_float
