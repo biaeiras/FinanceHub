@@ -1,9 +1,9 @@
 {
-    "nbianca240@gmail.com": {
-        "email": "nbianca240@gmail.com",
-        "nome": "Bianca",
+    "bibi@gmail.com": {
+        "email": "bibi@gmail.com",
+        "nome": "bia",
         "idade": 20,
-        "aporte": 30.0,
+        "aporte": 500.0,
         "perfil": "conservador"
     }
 }

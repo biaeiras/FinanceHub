@@ -10,7 +10,7 @@ def iniciar_buscando_usuarios_json():
             with open(ARQUIVO_USUARIO, "r", encoding= "utf-8") as arquivo: 
                 dados = json.load(arquivo)
 
-                gerenciadorDeUsuario.carregatTodosUsuarios(dados)
+                gerenciadorDeUsuario.carregarTodosUsuarios(dados)
             
         except Exception:
             print("[AVISO] Arquivo corrompido. Iniciando sistema vazio")
@@ -46,11 +46,10 @@ def menuPrincipal():
 
         if opcao == 1: 
             cadastroUsuario()
-        elif opcao == 3: 
-            #login()
-            pass
+        elif opcao == 2: 
+            login()
         
-        elif opcao == 0: 
+        elif opcao == 3: 
             encerrar_e_salvar_usuarios_json()
             print("Obrigada por usar o Finance Hub! Até logo.")
 
@@ -59,8 +58,112 @@ def menuPrincipal():
             print("Opção inválida ! Tente novamente")
 
     
+def menu_sistema_logado(nomeUsuario: str, email: str): 
+   
+    while True: 
+        print(f"------ Olá,{nomeUsuario} ------")
+        print("1 - Atualizar dados")
+        print("2 - Simulador de Aposentadoria")
+        print("3 - Simulador de Investimentos")
+        print("4- Sair")
         
+        try: 
 
+            opcao =int(input("Insira sua opção: "))
+        
+        except ValueError: 
+            print("Por favor, insira apenas as opções dadas")
+            continue
+
+
+        if opcao == 1: 
+            email = atualizar_dados_usuario(email)
+
+            dados_atualizados = gerenciadorDeUsuario.ConsultaUsuario(email)
+            if dados_atualizados != 1: 
+                nomeUsuario = dados_atualizados["nome"]
+        elif opcao == 2: 
+            #simulador_aposentadoria()
+            pass
+        elif opcao == 3: 
+            #simulador_investimento()
+            pass
+        
+        elif opcao == 4: 
+            print("Obrigada por usar o Finance Hub! Até logo.")
+            break
+
+        else: 
+            print("Opção inválida ! Tente novamente")
+
+
+def atualizar_dados_usuario(email:str): 
+
+    while True: 
+        print("------ATUALIZA USUÁRIO------")
+        print("1 - Atualizar email")
+        print("2 - Atualizar nome")
+        print("3 - Atualizar idade")
+        print("4 - Atualizar aporte")
+        print("5 - Atualizar perfil")
+        print("6- Sair")
+
+        try: 
+
+            opcao =int(input("Insira sua opção: "))
+        
+        except ValueError: 
+            print("Por favor, insira apenas as opções dadas")
+            continue
+
+        
+        if opcao == 1: 
+            campo = "email"
+            dado = input("Digite novo email: ").strip()
+
+        elif opcao == 2: 
+            campo = "nome"
+            dado = input("Digite novo nome: ").strip()
+        elif opcao == 3: 
+            campo = "idade"
+            try: 
+                dado = int(input("Digite sua nova idade: "))
+            except ValueError:
+                print("Idade deve ser um número inteiro!")
+                return
+
+        elif opcao == 4: 
+            campo = "aporte"
+            try: 
+                dado = float(input("Digite seu novo aporte mensal (R$): "))
+            except ValueError: 
+                print("Aporte deve ser um número decimal! ")
+                return
+
+        elif opcao == 5: 
+            campo = "perfil"
+            dado =  input("Digite seu novo perfil de risco (conservador, moderado ou arrojado): ").strip().lower()
+        
+        elif opcao == 6: 
+            return email
+
+        else: 
+            print("Opção Inválida !")
+
+        resultado = gerenciadorDeUsuario.AtualizaUsuario(email = email,  campo = campo, valor= dado)
+
+        if resultado == 0: 
+            print("Perfil atualizado com sucesso!")
+            if campo == "email": 
+                email = dado
+   
+        elif resultado == 1: 
+            print("Este email não encontrado no sistema")
+        
+        elif resultado == 2: 
+            print("Dados inválidos! Verifique se há campos vazios ou valores negativos ")
+
+            
 def cadastroUsuario(): 
     print("------CADASTRO USUÁRIO------")
 
@@ -100,6 +203,19 @@ def cadastroUsuario():
     elif resultado == 2: 
         print("Dados inválidos! Verifique se há campos vazios ou valores negativos ")
 
+def login(): 
+    print("------ LOGIN ------")
+    email = input("Digite seu email: ").strip()
+    usuario = gerenciadorDeUsuario.ConsultaUsuario(email)
+
+    if usuario == 1 : 
+        print("Email não cadastado! Cadastre-se primeiro")
+        return
+    
+    nome_usuario = usuario["nome"]
+    menu_sistema_logado(nomeUsuario = nome_usuario, email = email)
+    
+    encerrar_e_salvar_usuarios_json()
 
 
 if __name__ == "__main__": 
