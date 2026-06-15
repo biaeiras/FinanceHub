@@ -58,13 +58,17 @@ def menuSistemaLogado(nomeUsuario: str, email: str):
             if dados_atualizados != 1: 
                 nomeUsuario = dados_atualizados["nome"]
         
-        elif opcao == 2: 
-            #simulador_aposentadoria()
-            pass
-        
-        elif opcao == 3: 
-            #simulador_investimento()
-            pass
+       elif opcao == 2:
+
+    usuario = gerenciadorDeUsuario.ConsultaUsuario(email)
+
+    simulador_aposentadoria(
+        usuario["aporte"]
+    )
+
+elif opcao == 3:
+
+    simulador_investimento()
         
         elif opcao == 4: 
             print("Obrigada por usar o Finance Hub! Até logo.")
