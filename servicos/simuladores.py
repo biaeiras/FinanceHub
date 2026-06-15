@@ -1,3 +1,5 @@
+from servicos.consultor_bcb import obterValorIndicador
+
 # =========================
 # SIMULADOR APOSENTADORIA
 # =========================
@@ -5,28 +7,19 @@
 class SimuladorAposentadoria:
 
     def CalculaJuros(self, valor, taxa, tempo):
-        """
-        Calcula juros compostos
-        """
-        montante = valor * (1 + taxa) ** tempo
-        return montante
+        return valor * (1 + taxa) ** tempo
 
     def SimulaAcumulacao(self, aporte_mensal, taxa, meses):
-        """
-        Simula o valor acumulado ao longo do tempo
-        """
+
         acumulado = 0
 
-        for i in range(meses):
+        for _ in range(meses):
             acumulado = (acumulado + aporte_mensal) * (1 + taxa)
 
         return acumulado
 
     def CalculaTempoParaAposentar(self, aporte_mensal, objetivo, taxa):
-        """
-        Calcula quantos meses serão necessários
-        para atingir o objetivo
-        """
+
         acumulado = 0
         meses = 0
 
@@ -37,17 +30,14 @@ class SimuladorAposentadoria:
         return meses
 
     def CalcularValorASerRecebido(self, patrimonio, anos):
-        """
-        Estimativa simples de retirada mensal
-        """
-        meses = anos * 12
-        valor_mensal = patrimonio / meses
 
-        return valor_mensal
+        meses = anos * 12
+        return patrimonio / meses
 
     def ExibeResultadoAposentadoria(self, valor):
-        print("===== RESULTADO APOSENTADORIA =====")
-        print(f"Valor calculado: R$ {valor:.2f}")
+
+        print("\n===== RESULTADO APOSENTADORIA =====")
+        print(f"Valor acumulado: R$ {valor:.2f}")
 
 
 # =========================
@@ -57,52 +47,68 @@ class SimuladorAposentadoria:
 class SimuladorInvestimentos:
 
     def CalcularJuros(self, valor, taxa, tempo):
-        """
-        Calcula juros compostos
-        """
-        montante = valor * (1 + taxa) ** tempo
-        return montante
+        return valor * (1 + taxa) ** tempo
 
     def CalcularRentabilidade(self, valor_inicial, valor_final):
-        """
-        Calcula percentual de rentabilidade
-        """
-        rentabilidade = ((valor_final - valor_inicial) / valor_inicial) * 100
-        return rentabilidade
+
+        return ((valor_final - valor_inicial) / valor_inicial) * 100
 
     def SimularInvestimento(self, valor, taxa, meses):
-        """
-        Simula crescimento do investimento
-        """
-        resultado = valor * (1 + taxa) ** meses
-        return resultado
+
+        return valor * (1 + taxa) ** meses
 
     def ExibirResultado(self, valor):
-        print("===== RESULTADO INVESTIMENTO =====")
+
+        print("\n===== RESULTADO INVESTIMENTO =====")
         print(f"Valor final: R$ {valor:.2f}")
 
 
 # =========================
-# EXEMPLO DE USO
+# FUNÇÕES INTEGRADAS AO MENU
 # =========================
 
-aposentadoria = SimuladorAposentadoria()
+def simulador_aposentadoria(aporte):
 
-valor_acumulado = aposentadoria.SimulaAcumulacao(
-    aporte_mensal=500,
-    taxa=0.01,
-    meses=240
-)
+    taxa_selic = obterValorIndicador("selic")
 
-aposentadoria.ExibeResultadoAposentadoria(valor_acumulado)
+    if taxa_selic == 0:
+        print("Erro ao consultar a Selic.")
+        return
+
+    taxa_mensal = (taxa_selic / 100) / 12
+
+    anos = int(input("Quantos anos deseja investir? "))
+
+    simulador = SimuladorAposentadoria()
+
+    resultado = simulador.SimulaAcumulacao(
+        aporte_mensal=aporte,
+        taxa=taxa_mensal,
+        meses=anos * 12
+    )
+
+    simulador.ExibeResultadoAposentadoria(resultado)
 
 
-investimento = SimuladorInvestimentos()
+def simulador_investimento():
 
-resultado = investimento.SimularInvestimento(
-    valor=10000,
-    taxa=0.015,
-    meses=24
-)
+    valor = float(input("Valor inicial do investimento: "))
+    meses = int(input("Quantidade de meses: "))
 
-investimento.ExibirResultado(resultado)
+    taxa_cdi = obterValorIndicador("cdi")
+
+    if taxa_cdi == 0:
+        print("Erro ao consultar o CDI.")
+        return
+
+    taxa_mensal = (taxa_cdi / 100) / 12
+
+    simulador = SimuladorInvestimentos()
+
+    resultado = simulador.SimularInvestimento(
+        valor=valor,
+        taxa=taxa_mensal,
+        meses=meses
+    )
+
+    simulador.ExibirResultado(resultado)
