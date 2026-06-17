@@ -1,6 +1,6 @@
 from entidades import gerenciadorDeUsuario
 
-from servicos.simuladores import (
+from serviços.simuladores import (
     simulador_aposentadoria,
     simulador_investimento
 )
