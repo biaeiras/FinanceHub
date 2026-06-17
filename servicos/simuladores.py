@@ -1,5 +1,9 @@
 from servicos.consultor_bcb import obterValorIndicador
 
+from entidades.calculoFinanceiro import (
+calcularJurosCompostos,
+calcularRendaPassiva
+)
 # =========================
 # SIMULADOR APOSENTADORIA
 # =========================
@@ -7,32 +11,46 @@ from servicos.consultor_bcb import obterValorIndicador
 class SimuladorAposentadoria:
 
     def CalculaJuros(self, valor, taxa, tempo):
-        return valor * (1 + taxa) ** tempo
+        return calcularJurosCompostos(
+            valorInicial=valor,
+            aporte=0,
+            taxa=taxa,
+            tempo=tempo
+        )
 
     def SimulaAcumulacao(self, aporte_mensal, taxa, meses):
 
-        acumulado = 0
-
-        for _ in range(meses):
-            acumulado = (acumulado + aporte_mensal) * (1 + taxa)
-
-        return acumulado
+        return calcularJurosCompostos(
+            valorInicial=0,
+            aporte=aporte_mensal,
+            taxa=taxa,
+            tempo=meses
+        )
 
     def CalculaTempoParaAposentar(self, aporte_mensal, objetivo, taxa):
 
         acumulado = 0
-        meses = 0
+        meses = 1
 
         while acumulado < objetivo:
-            acumulado = (acumulado + aporte_mensal) * (1 + taxa)
+
+            acumulado = calcularJurosCompostos(
+                valorInicial=0,
+                aporte=aporte_mensal,
+                taxa=taxa,
+                tempo=meses
+            )
+
             meses += 1
 
         return meses
 
     def CalcularValorASerRecebido(self, patrimonio, anos):
 
-        meses = anos * 12
-        return patrimonio / meses
+        return calcularRendaPassiva(
+            valorTotal=patrimonio,
+            taxaRetirada=1 / (anos * 12)
+        )
 
     def ExibeResultadoAposentadoria(self, valor):
 
@@ -45,9 +63,14 @@ class SimuladorAposentadoria:
 # =========================
 
 class SimuladorInvestimentos:
-
     def CalcularJuros(self, valor, taxa, tempo):
-        return valor * (1 + taxa) ** tempo
+
+        return calcularJurosCompostos(
+            valorInicial=valor,
+            aporte=0,
+            taxa=taxa,
+            tempo=tempo
+        )
 
     def CalcularRentabilidade(self, valor_inicial, valor_final):
 
@@ -55,7 +78,12 @@ class SimuladorInvestimentos:
 
     def SimularInvestimento(self, valor, taxa, meses):
 
-        return valor * (1 + taxa) ** meses
+        return calcularJurosCompostos(
+            valorInicial=valor,
+            aporte=0,
+            taxa=taxa,
+            tempo=meses
+        )
 
     def ExibirResultado(self, valor):
 
