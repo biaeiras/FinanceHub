@@ -1,16 +1,31 @@
+__all__ = [
+    "simulador_aposentadoria",
+    "simulador_investimento"
+]
+
 from servicos.consultor_bcb import obterValorIndicador
 
 from entidades.calculoFinanceiro import (
-calcularJurosCompostos,
-calcularRendaPassiva
+    calcularJurosCompostos,
+    calcularRendaPassiva
 )
+
+
 # =========================
 # SIMULADOR APOSENTADORIA
 # =========================
 
 class SimuladorAposentadoria:
+    """
+    Classe responsável pelos cálculos relacionados
+    ao planejamento de aposentadoria.
+    """
 
     def CalculaJuros(self, valor, taxa, tempo):
+        """
+        Calcula o montante final utilizando juros compostos.
+        """
+
         return calcularJurosCompostos(
             valorInicial=valor,
             aporte=0,
@@ -19,6 +34,10 @@ class SimuladorAposentadoria:
         )
 
     def SimulaAcumulacao(self, aporte_mensal, taxa, meses):
+        """
+        Simula a acumulação de patrimônio ao longo do tempo
+        utilizando aportes mensais.
+        """
 
         return calcularJurosCompostos(
             valorInicial=0,
@@ -28,6 +47,10 @@ class SimuladorAposentadoria:
         )
 
     def CalculaTempoParaAposentar(self, aporte_mensal, objetivo, taxa):
+        """
+        Calcula quantos meses são necessários para atingir
+        um patrimônio objetivo.
+        """
 
         acumulado = 0
         meses = 1
@@ -46,6 +69,10 @@ class SimuladorAposentadoria:
         return meses
 
     def CalcularValorASerRecebido(self, patrimonio, anos):
+        """
+        Calcula uma estimativa de renda passiva mensal
+        baseada no patrimônio acumulado.
+        """
 
         return calcularRendaPassiva(
             valorTotal=patrimonio,
@@ -53,6 +80,9 @@ class SimuladorAposentadoria:
         )
 
     def ExibeResultadoAposentadoria(self, valor):
+        """
+        Exibe o resultado da simulação de aposentadoria.
+        """
 
         print("\n===== RESULTADO APOSENTADORIA =====")
         print(f"Valor acumulado: R$ {valor:.2f}")
@@ -63,7 +93,15 @@ class SimuladorAposentadoria:
 # =========================
 
 class SimuladorInvestimentos:
+    """
+    Classe responsável pelos cálculos relacionados
+    a investimentos.
+    """
+
     def CalcularJuros(self, valor, taxa, tempo):
+        """
+        Calcula o montante final utilizando juros compostos.
+        """
 
         return calcularJurosCompostos(
             valorInicial=valor,
@@ -73,10 +111,16 @@ class SimuladorInvestimentos:
         )
 
     def CalcularRentabilidade(self, valor_inicial, valor_final):
+        """
+        Calcula a rentabilidade percentual do investimento.
+        """
 
         return ((valor_final - valor_inicial) / valor_inicial) * 100
 
     def SimularInvestimento(self, valor, taxa, meses):
+        """
+        Simula o crescimento de um investimento ao longo do tempo.
+        """
 
         return calcularJurosCompostos(
             valorInicial=valor,
@@ -86,6 +130,9 @@ class SimuladorInvestimentos:
         )
 
     def ExibirResultado(self, valor):
+        """
+        Exibe o resultado da simulação de investimento.
+        """
 
         print("\n===== RESULTADO INVESTIMENTO =====")
         print(f"Valor final: R$ {valor:.2f}")
@@ -96,6 +143,11 @@ class SimuladorInvestimentos:
 # =========================
 
 def simulador_aposentadoria(aporte):
+    """
+    Executa uma simulação de aposentadoria utilizando
+    o aporte mensal do usuário e a taxa Selic obtida
+    pela API do Banco Central.
+    """
 
     taxa_selic = obterValorIndicador("selic")
 
@@ -119,6 +171,10 @@ def simulador_aposentadoria(aporte):
 
 
 def simulador_investimento():
+    """
+    Executa uma simulação de investimento utilizando
+    o CDI obtido pela API do Banco Central.
+    """
 
     valor = float(input("Valor inicial do investimento: "))
     meses = int(input("Quantidade de meses: "))
