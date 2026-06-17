@@ -1,4 +1,4 @@
-from serviços.consultor_bcb import obterValorIndicador
+from servicos.consultor_bcb import obterValorIndicador
 
 # =========================
 # SIMULADOR APOSENTADORIA

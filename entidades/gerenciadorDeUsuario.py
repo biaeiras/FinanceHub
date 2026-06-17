@@ -149,7 +149,6 @@ def AtualizaUsuario(email: str, campo: str, valor) -> int:
     if _VerificaExistenciaEmail(email) == 1: 
         return 1 
     
-    #isso é validação, ataualizar tá fazendo mais do que devia?
     camposValidos = {"email", "nome", "idade", "aporte", "perfil"}
     if campo not in camposValidos: 
         return 2
@@ -160,7 +159,6 @@ def AtualizaUsuario(email: str, campo: str, valor) -> int:
     if _ValidarDados(usuario_temp) == 2: 
         return 2
     
-    #CRIAR TESTES PARA ESSE CENÁRIO DO EMAIL
     if campo == "email": 
         novo_email = str(valor).strip()
 
