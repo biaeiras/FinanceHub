@@ -5,7 +5,7 @@ __all__ = [
 
 from servicos.consultor_bcb import obterValorIndicador
 
-from entidades.calculoFinanceiro import (
+from entidades.CalculoFinanceiro import (
     calcularJurosCompostos,
     calcularRendaPassiva
 )

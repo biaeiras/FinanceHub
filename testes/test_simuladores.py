@@ -1,6 +1,6 @@
 import unittest
 
-from entidades.calculoFinanceiro import (
+from entidades.CalculoFinanceiro import (
     calcularJurosCompostos,
     calcularRendaPassiva
 )

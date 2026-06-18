@@ -1,7 +1,5 @@
 import unittest 
 from entidades.gerenciadorDeUsuario import *
-# Importamos o módulo como objeto para conseguir manipular a memória global dele
-import entidades.gerenciadorDeUsuario
 
 class TestGerenciadorUsuario(unittest.TestCase):
 

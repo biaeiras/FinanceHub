@@ -17,7 +17,7 @@ class TestConsultorBCB(unittest.TestCase):
     def test_02_obter_indicador_invalido_retorna_zero(self):
         print("Caso de Teste 02 (BCB) - Busca indicador inexistente no dicionário")
         
-        valor = obterValorIndicador("abacaxi")
+        valor = obterValorIndicador("teste")
         
         self.assertEqual(valor, 0.0)
 
