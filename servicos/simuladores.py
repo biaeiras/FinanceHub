@@ -1,133 +1,64 @@
-__all__ = [
-    "simulador_aposentadoria",
-    "simulador_investimento"
-]
+import unittest
 
-from servicos.consultor_bcb import obterValorIndicador
-
-from entidades.CalculoFinanceiro import (
-    calcularJurosCompostos,
-    calcularRendaPassiva
+from servicos.simuladores import (
+    calculaJuros,
+    simulaAcumulacao,
+    calculaTempoParaAposentar,
+    calcularValorASerRecebido
 )
 
 
-# =========================
-# FUNÇÕES DE CÁLCULO
-# =========================
+class TestSimuladores(unittest.TestCase):
 
-def calculaJuros(valor, taxa, tempo):
-    """
-    Calcula o montante final utilizando juros compostos.
-    """
+    def test_01_calcula_juros(self):
 
-    return calcularJurosCompostos(
-        valorInicial=valor,
-        aporte=0,
-        taxa=taxa,
-        tempo=tempo
-    )
-
-
-def simulaAcumulacao(aporte_mensal, taxa, meses):
-    """
-    Simula a acumulação de patrimônio ao longo do tempo.
-    """
-
-    return calcularJurosCompostos(
-        valorInicial=0,
-        aporte=aporte_mensal,
-        taxa=taxa,
-        tempo=meses
-    )
-
-
-def calculaTempoParaAposentar(aporte_mensal, objetivo, taxa):
-    """
-    Calcula quantos meses são necessários para atingir
-    um patrimônio objetivo.
-    """
-
-    acumulado = 0
-    meses = 1
-
-    while acumulado < objetivo:
-
-        acumulado = calcularJurosCompostos(
-            valorInicial=0,
-            aporte=aporte_mensal,
-            taxa=taxa,
-            tempo=meses
+        resultado = calculaJuros(
+            valor=1000,
+            taxa=0.01,
+            tempo=12
         )
 
-        meses += 1
+        self.assertGreater(resultado, 1000)
 
-    return meses
+    def test_02_simula_acumulacao(self):
 
+        resultado = simulaAcumulacao(
+            aporte_mensal=500,
+            taxa=0.01,
+            meses=12
+        )
 
-def calcularValorASerRecebido(patrimonio, anos):
-    """
-    Calcula uma estimativa de renda passiva mensal.
-    """
+        self.assertGreater(resultado, 6000)
 
-    return calcularRendaPassiva(
-        valorTotal=patrimonio,
-        taxaRetirada=1 / (anos * 12)
-    )
+    def test_03_calcula_tempo_para_aposentar(self):
 
+        meses = calculaTempoParaAposentar(
+            aporte_mensal=1000,
+            objetivo=10000,
+            taxa=0.01
+        )
 
-# =========================
-# FUNÇÕES INTEGRADAS AO MENU
-# =========================
+        self.assertGreater(meses, 0)
 
-def simulador_aposentadoria(aporte):
-    """
-    Executa uma simulação de aposentadoria utilizando
-    a Selic obtida na API do Banco Central.
-    """
+    def test_04_calcular_valor_a_ser_recebido(self):
 
-    taxa_selic = obterValorIndicador("selic")
+        renda = calcularValorASerRecebido(
+            patrimonio=120000,
+            anos=20
+        )
 
-    if taxa_selic == 0:
-        print("Erro ao consultar a Selic.")
-        return
+        self.assertGreater(renda, 0)
 
-    taxa_mensal = (taxa_selic / 100) / 12
+    def test_05_calcula_juros_parametros_invalidos(self):
 
-    anos = int(input("Quantos anos deseja investir? "))
+        resultado = calculaJuros(
+            valor=-1000,
+            taxa=0.01,
+            tempo=12
+        )
 
-    resultado = simulaAcumulacao(
-        aporte_mensal=aporte,
-        taxa=taxa_mensal,
-        meses=anos * 12
-    )
-
-    print("\n===== RESULTADO APOSENTADORIA =====")
-    print(f"Valor acumulado: R$ {resultado:.2f}")
+        self.assertEqual(resultado, 0.0)
 
 
-def simulador_investimento():
-    """
-    Executa uma simulação de investimento utilizando
-    o CDI obtido na API do Banco Central.
-    """
-
-    valor = float(input("Valor inicial do investimento: "))
-    meses = int(input("Quantidade de meses: "))
-
-    taxa_cdi = obterValorIndicador("cdi")
-
-    if taxa_cdi == 0:
-        print("Erro ao consultar o CDI.")
-        return
-
-    taxa_mensal = (taxa_cdi / 100) / 12
-
-    resultado = calcularJurosCompostos(
-        valorInicial=valor,
-        aporte=0,
-        taxa=taxa_mensal,
-        tempo=meses
-    )
-
-    print("\n===== RESULTADO INVESTIMENTO =====")
-    print(f"Valor final: R$ {resultado:.2f}")
+if __name__ == "__main__":
+    unittest.main()
