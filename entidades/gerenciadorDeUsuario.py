@@ -30,6 +30,7 @@ def _ValidarDados(u: dict) -> int:
         nome = u.get("nome")
         idade = u.get("idade")
         aporte = u.get("aporte")
+        senha = u.get("senha")
 
         # 2 - Validação se campo for ausente(None) ou vazio ("")
 
@@ -43,6 +44,9 @@ def _ValidarDados(u: dict) -> int:
             return 2
         
         if aporte is None: 
+            return 2
+        
+        if senha is None or str(senha).strip() == "": 
             return 2
 
         #3 - Validação de Email ( Possui @?)
@@ -112,6 +116,7 @@ def CriaUsuario(u: dict, email: str):
         "nome": str(u.get("nome")).strip(), 
         "idade": int(u.get("idade")), 
         "aporte": float(u.get("aporte")),
+        "senha" : str(u.get("senha", "")).strip(), 
         "historico": {"aposentadoria": None, "investimento": None}
     }
     

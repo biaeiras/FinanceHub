@@ -229,6 +229,8 @@ def cadastroUsuario() -> None:
     except ValueError:
         print("Aporte deve ser um número decimal!")
         return
+    
+    senha = input("Digite sua senha: ").strip()
 
 
     novoUsuario = {
@@ -236,6 +238,7 @@ def cadastroUsuario() -> None:
         "nome": nome,
         "idade": idade,
         "aporte": aporte,
+        "senha": senha, 
     }
 
     resultado = CriaUsuario(
@@ -269,6 +272,12 @@ def login() -> None:
     if usuario == 1:
 
         print("Email não cadastrado! Cadastre-se primeiro")
+        return
+    
+    senha = input("Digite sua senha: ").strip()
+
+    if senha != usuario.get("senha"):
+        print("Senha incorreta! Acesso negado.")
         return
 
     nome_usuario = usuario["nome"]
