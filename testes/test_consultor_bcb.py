@@ -6,7 +6,6 @@ from servicos.consultor_bcb import obterValorIndicador
 
 class TestConsultorBCB(unittest.TestCase):
 
-    #VER COMO FAZER ESSE TESTE
     def test_01_obter_indicador_valido_sucesso(self):
         print("Caso de Teste 01 (BCB) - Busca Selic com sucesso na API real")
        
@@ -30,7 +29,7 @@ class TestConsultorBCB(unittest.TestCase):
         with patch('requests.get', side_effect=requests.exceptions.ConnectionError):
             valor = obterValorIndicador("cdi")
             
-            self.assertEqual(valor, 10.40) #vai para o valor padrão caso a pai quebre
+            self.assertEqual(valor, 0.75) #vai para o valor padrão caso a api quebre
             self.assertIsInstance(valor, float)
 
 
