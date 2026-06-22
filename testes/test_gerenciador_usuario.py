@@ -14,7 +14,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
         retorno = CriaUsuario(usuario, "ana@gmail.com")
         self.assertEqual(retorno, 0)
@@ -25,7 +24,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "email": "ana@gmail.com",
         "nome": "Ana",
         "idade": 30,
-        "perfil": "moderado"
         }
         retorno = CriaUsuario(usuario, "ana@gmail.com")
         self.assertEqual(retorno, 2)
@@ -45,7 +43,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
 
         retorno = CriaUsuario(usuario, "anagmail.com")
@@ -61,7 +58,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
 
         #insere primeiro para o email existir nos dados
@@ -85,7 +81,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
         retorno =  CriaUsuario(usuario, "ana@gmail.com")
         self.assertEqual(retorno, 0)
@@ -96,7 +91,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "email": "ana@gmail.com",
         "nome": "Ana",
         "idade": 30,
-        "perfil": "moderado"
         }
         retorno =  CriaUsuario(usuario, "ana@gmail.com" )
         self.assertEqual(retorno, 2)
@@ -108,7 +102,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
         #chama a primeira vez pra salvar
         CriaUsuario(usuario, "ana@gmail.com")
@@ -124,15 +117,14 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
 
         CriaUsuario(usuario, "ana@gmail.com")
 
         resultado = ConsultaUsuario("ana@gmail.com")
 
-
-        self.assertEqual(resultado, usuario)
+        self.assertEqual(resultado["email"], "ana@gmail.com")
+        self.assertEqual(resultado["historico"], {"aposentadoria": None, "investimento": None})
     
     def test_12_busca_usuario_nao_existente(self):
         print("Caso de Teste 12 - Busca usuário não cadastrado no sistema")
@@ -149,7 +141,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
 
         CriaUsuario(usuario, "ana@gmail.com")
@@ -182,7 +173,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
 
         CriaUsuario(usuario, "ana@gmail.com")
@@ -204,7 +194,6 @@ class TestGerenciadorUsuario(unittest.TestCase):
         "nome": "Ana",
         "idade": 30,
         "aporte": 500.0,
-        "perfil": "moderado"
         }
 
         CriaUsuario(usuario, "ana@gmail.com")
@@ -220,7 +209,7 @@ class TestGerenciadorUsuario(unittest.TestCase):
     def test_17_atualiza_email_com_sucesso(self):
         print("Caso de Teste 17 - Atualiza e-mail mudando a chave do dicionário")
         usuario = {
-            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0, "perfil": "moderado"
+            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0
         }
         CriaUsuario(usuario, "ana@gmail.com")
 
@@ -238,7 +227,7 @@ class TestGerenciadorUsuario(unittest.TestCase):
     def test_18_atualiza_email_mesmo_valor_deve_retornar_zero(self):
         print("Caso de Teste 18 - Atualiza e-mail passando o mesmo e-mail atual")
         usuario = {
-            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0, "perfil": "moderado"
+            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0
         }
         CriaUsuario(usuario, "ana@gmail.com")
 
@@ -250,19 +239,42 @@ class TestGerenciadorUsuario(unittest.TestCase):
         print("Caso de Teste 19 - Tenta mudar e-mail para outro que já está cadastrado")
         # Cadastra a Ana
         usuario1 = {
-            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0, "perfil": "moderado"
+            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0
         }
         CriaUsuario(usuario1, "ana@gmail.com")
 
         # Cadastra o Carlos
         usuario2 = {
-            "email": "carlos@gmail.com", "nome": "Carlos", "idade": 25, "aporte": 300.0, "perfil": "conservador"
-        }
+            "email": "carlos@gmail.com", "nome": "Carlos", "idade": 25, "aporte": 300.0}
         CriaUsuario(usuario2, "carlos@gmail.com")
 
         # Tenta mudar o e-mail da Ana para 'carlos@gmail.com' (O sistema deve barrar com erro 2)
         retorno = AtualizaUsuario("ana@gmail.com", "email", "carlos@gmail.com")
         self.assertEqual(retorno, 2)
+    
+def test_20_historico_salva_apenas_ultimo_por_categoria(self):
+        print("Caso de Teste 20 - Valida gravação do último por categoria no Histórico")
+        usuario = {
+            "email": "ana@gmail.com", "nome": "Ana", "idade": 30, "aporte": 500.0
+        }
+        CriaUsuario(usuario, "ana@gmail.com")
+
+        sim1 = {"tipo": "Investimento", "resultado_final": 1000.0}
+        sim2 = {"tipo": "Investimento", "resultado_final": 1500.0} 
+        sim3 = {"tipo": "Aposentadoria", "resultado_final": 50000.0}
+
+        # Executa as gravações
+        AdicionarHistorico("ana@gmail.com", "investimento", sim1)
+        AdicionarHistorico("ana@gmail.com", "investimento", sim2)
+        AdicionarHistorico("ana@gmail.com", "aposentadoria", sim3)
+
+        dados = ConsultaUsuario("ana@gmail.com")
+        historico = dados["historico"]
+
+        
+        self.assertEqual(historico["investimento"]["resultado_final"], 1500.0)
+        
+        self.assertEqual(historico["aposentadoria"]["resultado_final"], 50000.0)
 
 
 if __name__ == '__main__':

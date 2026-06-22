@@ -9,6 +9,13 @@ indicadores = {
     "poupança": 196
 }
 
+valores_padroes = {
+    "selic": 10.50,    
+    "cdi": 10.40,       
+    "ipca": 4.50,        
+    "poupança": 6.17     
+}
+
 def obterValorIndicador(nome_indicador: str) -> float:
 
     nome = nome_indicador.strip().lower()
@@ -21,7 +28,7 @@ def obterValorIndicador(nome_indicador: str) -> float:
     url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{codigo_sgs}/dados/ultimos/1?formato=json"
 
     try:
-        resposta = requests.get(url, timeout=5)
+        resposta = requests.get(url, timeout=10)
 
         if resposta.status_code == 200:
             dados = resposta.json()
@@ -30,7 +37,8 @@ def obterValorIndicador(nome_indicador: str) -> float:
 
             return float(str(valor).replace(",", "."))
 
-        return 0.0
+        raise Exception("API fora do ar")
 
     except Exception:
-        return 0.0
+        print(f"\n[Aviso Técnico] Conexão com o Banco Central do Brasil indisponível. Usando taxa {nome.upper()} padrão de mercado.")
+        return valores_padroes.get(nome, 0.0)

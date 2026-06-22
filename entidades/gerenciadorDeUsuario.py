@@ -1,5 +1,6 @@
 #Apresenta a lista de funções a serem disponibilizadas pelo módulo
-__all__ = ["CriaUsuario", "ConsultaUsuario", "AtualizaUsuario", "obterTodosUsuarios", "carregarTodosUsuarios" ] 
+__all__ = ["CriaUsuario", "ConsultaUsuario", "AtualizaUsuario", 
+           "obterTodosUsuarios", "carregarTodosUsuarios", "AdicionarHistorico" ] 
 
 #Encapsulado 
 _usuarios = {}
@@ -29,7 +30,6 @@ def _ValidarDados(u: dict) -> int:
         nome = u.get("nome")
         idade = u.get("idade")
         aporte = u.get("aporte")
-        perfil = u.get("perfil")
 
         # 2 - Validação se campo for ausente(None) ou vazio ("")
 
@@ -43,9 +43,6 @@ def _ValidarDados(u: dict) -> int:
             return 2
         
         if aporte is None: 
-            return 2
-        
-        if perfil is None: 
             return 2
 
         #3 - Validação de Email ( Possui @?)
@@ -70,13 +67,6 @@ def _ValidarDados(u: dict) -> int:
         if (aporte <= 0) : 
             return 2
 
-    
-        #7- Validação de perfil (perfil é conservador/moderado/arrojado?)
-        perfil = str(u.get("perfil")).strip().lower()
-        tipos_validos = {"conservador", "moderado", "arrojado"}
-
-        if perfil not in tipos_validos: 
-            return 2
         
 
         return 0
@@ -122,7 +112,7 @@ def CriaUsuario(u: dict, email: str):
         "nome": str(u.get("nome")).strip(), 
         "idade": int(u.get("idade")), 
         "aporte": float(u.get("aporte")),
-        "perfil": str(u.get("perfil")).strip().lower()
+        "historico": {"aposentadoria": None, "investimento": None}
     }
     
     return 0 
@@ -149,7 +139,7 @@ def AtualizaUsuario(email: str, campo: str, valor) -> int:
     if _VerificaExistenciaEmail(email) == 1: 
         return 1 
     
-    camposValidos = {"email", "nome", "idade", "aporte", "perfil"}
+    camposValidos = {"email", "nome", "idade", "aporte"}
     if campo not in camposValidos: 
         return 2
     
@@ -179,11 +169,21 @@ def AtualizaUsuario(email: str, campo: str, valor) -> int:
     elif campo == "aporte": 
        _usuarios[email][campo] = float(valor)
     
-    elif campo == "perfil": 
-       _usuarios[email][campo] = str(valor).strip().lower()
-    
     else: 
         _usuarios[email][campo] = str(valor).strip()
         
     return 0 
+
+
+def AdicionarHistorico(email: str, categoria: str, registro: dict) -> int:
+    """
+    Adiciona uma nova simulação ao histórico do usuário.
+    Retorna 0 em sucesso, 1 se o usuário não existir.
+    """
+    if _VerificaExistenciaEmail(email) == 1:
+        return 1
+    
+
+    _usuarios[email]["historico"][categoria] = registro
+    return 0
     

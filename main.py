@@ -17,7 +17,7 @@ def iniciar_buscando_usuarios_json():
             print("[AVISO] Arquivo corrompido. Iniciando sistema vazio")
 
 def encerrar_e_salvar_usuarios_json(): 
-    print("\n Salvando os dados...")
+    print("\nSalvando os dados...")
 
     dadosFinais = gerenciadorDeUsuario.obterTodosUsuarios()
     with open(ARQUIVO_USUARIO, "w", encoding= "utf-8") as arquivo: 

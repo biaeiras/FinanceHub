@@ -6,6 +6,7 @@ from servicos.consultor_bcb import obterValorIndicador
 
 class TestConsultorBCB(unittest.TestCase):
 
+    #VER COMO FAZER ESSE TESTE
     def test_01_obter_indicador_valido_sucesso(self):
         print("Caso de Teste 01 (BCB) - Busca Selic com sucesso na API real")
        
@@ -21,14 +22,16 @@ class TestConsultorBCB(unittest.TestCase):
         
         self.assertEqual(valor, 0.0)
 
+  
     def test_03_obter_indicador_com_erro_de_conexao(self):
-        print("Caso de Teste 03 (BCB) - Simula queda de internet ou erro na API")
+        print("Caso de Teste 03 (BCB) - Simula queda de internet ou erro na API (Deve ativar o Fallback)")
         
         # Usamos o 'patch' para simular que o requests.get disparou uma exceção (queda de rede)
         with patch('requests.get', side_effect=requests.exceptions.ConnectionError):
             valor = obterValorIndicador("cdi")
             
-            self.assertEqual(valor, 0.0)
+            self.assertEqual(valor, 10.40) #vai para o valor padrão caso a pai quebre
+            self.assertIsInstance(valor, float)
 
 
 if __name__ == '__main__':
