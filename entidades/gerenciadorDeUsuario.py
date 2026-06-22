@@ -94,7 +94,7 @@ def _VerificaExistenciaEmail(email:str) -> int:
 
 #FUNCÕES DE ACESSO
 
-def CriaUsuario(u: dict, email: str):
+def CriaUsuario(u: dict, email: str) -> int:
     """
     Retorno 0 -> Usuário Inserido com sucesso
     Retorno 1 -> Email já cadastrado
@@ -123,7 +123,7 @@ def CriaUsuario(u: dict, email: str):
     return 0 
     
 
-def ConsultaUsuario(email: str):
+def ConsultaUsuario(email: str) -> dict | int:
     """
     Retorna  o  dicionário do usuário se o email for encontrado 
     Retorna 1 se o email não existir 
