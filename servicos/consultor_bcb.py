@@ -11,7 +11,7 @@ indicadores = {
 
 valores_padroes = {
     "selic": 10.50,    
-    "cdi": 10.40,       
+    "cdi": 0.75,       
     "ipca": 4.50,        
     "poupança": 6.17     
 }

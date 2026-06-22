@@ -6,7 +6,7 @@ from entidades.CalculoFinanceiro import (
     calcularRendaPassiva
 )
 
-# from entidades.gerenciadorDeUsuario import AdicionarHistorico
+from entidades.gerenciadorDeUsuario import AdicionarHistorico
 
 __all__ = [
     "simulador_aposentadoria",
@@ -96,7 +96,7 @@ def calcularValorASerRecebido(
 # FUNÇÕES INTEGRADAS AO MENU
 # =========================
 
-def simulador_aposentadoria(aporte: float) -> None:
+def simulador_aposentadoria(aporte: float, email_usuario: str) -> None:
     """
     Executa uma simulação de aposentadoria utilizando
     a Selic obtida na API do Banco Central.
@@ -130,11 +130,11 @@ def simulador_aposentadoria(aporte: float) -> None:
     }
     
 
-# AdicionarHistorico(email_usuario, "aposentadoria", dados_simulacao)
+    AdicionarHistorico(email_usuario, "aposentadoria", dados_simulacao)
 
 
 
-def simulador_investimento() -> None:
+def simulador_investimento(email_usuario: str) -> None:
     """
     Executa uma simulação de investimento utilizando
     o CDI obtido na API do Banco Central.
@@ -169,4 +169,4 @@ def simulador_investimento() -> None:
         "resultado_final": round(resultado, 2)
     }
     
-   #AdicionarHistorico(email_usuario,"investimento", dados_simulacao)
+    AdicionarHistorico(email_usuario,"investimento", dados_simulacao)
