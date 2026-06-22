@@ -6,11 +6,14 @@ from entidades import calcularJurosCompostos, calcularRendaPassiva
 
 from entidades.gerenciadorDeUsuario import AdicionarHistorico
 
-_all_ = [
+__all__ = [
     "simulador_aposentadoria",
-    "simulador_investimento"
+    "simulador_investimento",
+    "calculaJuros",
+    "simulaAcumulacao",
+    "calculaTempoParaAposentar",
+    "calcularValorASerRecebido"
 ]
-
 
 # =========================
 # FUNÇÕES DE CÁLCULO
