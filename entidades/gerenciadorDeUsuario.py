@@ -1,21 +1,22 @@
 #Apresenta a lista de funções a serem disponibilizadas pelo módulo
-__all__ = ["ValidarDados", "VerificaExistenciaEmail", "CriaUsuario", "ConsultaUsuario", "AtualizaUsuario", "obterTodosUsuarios", "carregarTodosUsuarios" ] 
+__all__ = ["CriaUsuario", "ConsultaUsuario", "AtualizaUsuario", "obterTodosUsuarios", "carregarTodosUsuarios" ] 
 
-usuarios = {}
+#Encapsulado 
+_usuarios = {}
 
 def obterTodosUsuarios() -> dict:
-    return usuarios
+    return _usuarios.copy() #assim não acessa diretamente _usuarios
     
-def carregarTodosUsuarios(dadosCarregados: dict):
-    global usuarios
-    usuarios.clear()
-    usuarios.update(dadosCarregados)
+def carregarTodosUsuarios(dadosCarregados: dict) -> None:
+    global _usuarios
+    _usuarios.clear()
+    _usuarios.update(dadosCarregados)
   
 
-def ValidarDados(u: dict) -> int:
+def _ValidarDados(u: dict) -> int:
 
     """
-    Retorno 0 -> Dados inválidos
+    Retorno 0 -> Dados VÁLIDOS e aprovados
     Retorno 2 -> Parâmetros inválidos, tipos errados ou campos ausentes
 
     """
@@ -78,8 +79,6 @@ def ValidarDados(u: dict) -> int:
             return 2
         
 
-        #se não entrou em nenhum if(passou por tudo)
-
         return 0
     
     except(ValueError, TypeError):
@@ -87,19 +86,19 @@ def ValidarDados(u: dict) -> int:
     
 
 
-def VerificaExistenciaEmail(email:str) -> int:
+def _VerificaExistenciaEmail(email:str) -> int:
     """
     Retorno 0 -> Usuário encontrado
     Retorno 1 -> Usuário não encontrado
 
     """
      
-    if email in usuarios: 
+    if email in _usuarios: 
         return 0
      
     return 1 
 
-    
+#FUNCÕES DE ACESSO
 
 def CriaUsuario(u: dict, email: str):
     """
@@ -110,15 +109,15 @@ def CriaUsuario(u: dict, email: str):
     """
 
     #1 - Valida os dados antes 
-    if ValidarDados(u) == 2: 
+    if _ValidarDados(u) == 2: 
         return 2
     
     #2 - Checa se o email existe 
-    if VerificaExistenciaEmail(email) == 0:
+    if _VerificaExistenciaEmail(email) == 0:
         return 1
     
     #3 - Se o email passou, guarda no dicionário 
-    usuarios[email] = {
+    _usuarios[email] = {
         "email": str(u.get("email")).strip(), 
         "nome": str(u.get("nome")).strip(), 
         "idade": int(u.get("idade")), 
@@ -135,8 +134,8 @@ def ConsultaUsuario(email: str):
     Retorna 1 se o email não existir 
     """
     email = str(email).strip()
-    if email in usuarios: 
-        return usuarios[email]
+    if email in _usuarios: 
+        return _usuarios[email]
 
     return 1
    
@@ -147,47 +146,44 @@ def AtualizaUsuario(email: str, campo: str, valor) -> int:
     Retorna 2 -> Campo inválido ou Valor Inválido
 
     """
-    if VerificaExistenciaEmail(email) == 1: 
+    if _VerificaExistenciaEmail(email) == 1: 
         return 1 
     
-    #isso é validação, ataualizar tá fazendo mais do que devia?
     camposValidos = {"email", "nome", "idade", "aporte", "perfil"}
     if campo not in camposValidos: 
         return 2
     
-    usuario_temp = usuarios[email].copy() 
+    usuario_temp = _usuarios[email].copy() 
     usuario_temp[campo] = valor
 
-    if ValidarDados(usuario_temp) == 2: 
+    if _ValidarDados(usuario_temp) == 2: 
         return 2
     
-    #CRIAR TESTES PARA ESSE CENÁRIO DO EMAIL
     if campo == "email": 
         novo_email = str(valor).strip()
 
         if novo_email == email: 
             return 0 
         
-        if VerificaExistenciaEmail(novo_email) == 0: 
+        if _VerificaExistenciaEmail(novo_email) == 0: 
             return 2
         
-        dados_usuarios = usuarios[email]
+        dados_usuarios = _usuarios[email]
         dados_usuarios["email"] = novo_email
-        usuarios[novo_email] = dados_usuarios
-        usuarios.pop(email)
+        _usuarios[novo_email] = dados_usuarios
+        _usuarios.pop(email)
         
     elif campo == "idade": 
-       usuarios[email][campo] = int(valor) 
+       _usuarios[email][campo] = int(valor) 
     
     elif campo == "aporte": 
-       usuarios[email][campo] = float(valor)
+       _usuarios[email][campo] = float(valor)
     
     elif campo == "perfil": 
-       usuarios[email][campo] = str(valor).strip().lower()
+       _usuarios[email][campo] = str(valor).strip().lower()
     
     else: 
-        usuarios[email][campo] = str(valor).strip()
+        _usuarios[email][campo] = str(valor).strip()
         
-
     return 0 
     
