@@ -8,7 +8,7 @@ from servicos.simuladores import (
 __all__ = ["menuPrincipal"]
 
 
-def menuPrincipal():
+def menuPrincipal() -> None:
 
     while True:
         print("\n")
@@ -41,7 +41,7 @@ def menuPrincipal():
             print("Opção inválida ! Tente novamente")
 
 
-def menuSistemaLogado(nomeUsuario: str, email: str):
+def menuSistemaLogado(nomeUsuario: str, email: str) -> None:
 
     while True:
 
@@ -126,7 +126,7 @@ def menuSistemaLogado(nomeUsuario: str, email: str):
             print("Opção inválida ! Tente novamente")
 
 
-def AtualizarDadosUsuario(email: str):
+def AtualizarDadosUsuario(email: str) -> str:
 
     while True:
 
@@ -209,7 +209,7 @@ def AtualizarDadosUsuario(email: str):
             )
 
 
-def cadastroUsuario():
+def cadastroUsuario() -> None:
 
     print("------CADASTRO USUÁRIO------")
 
@@ -258,7 +258,7 @@ def cadastroUsuario():
         )
 
 
-def login():
+def login() -> None:
 
     print("------ LOGIN ------")
 
