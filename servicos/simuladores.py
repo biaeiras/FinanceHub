@@ -1,10 +1,12 @@
 
 from servicos.consultor_bcb import obterValorIndicador
 
-from entidades import calcularJurosCompostos, calcularRendaPassiva
+from entidades.CalculoFinanceiro import (
+    calcularJurosCompostos,
+    calcularRendaPassiva
+)
 
-
-from entidades.gerenciadorDeUsuario import AdicionarHistorico
+# from entidades.gerenciadorDeUsuario import AdicionarHistorico
 
 __all__ = [
     "simulador_aposentadoria",
@@ -128,7 +130,7 @@ def simulador_aposentadoria(aporte: float) -> None:
     }
     
 
-    AdicionarHistorico(email_usuario, "aposentadoria", dados_simulacao)
+# AdicionarHistorico(email_usuario, "aposentadoria", dados_simulacao)
 
 
 
@@ -147,7 +149,7 @@ def simulador_investimento() -> None:
         print("Erro ao consultar o CDI.")
         return
 
-    taxa_mensal = (taxa_cdi / 100) / 12
+    taxa_mensal = (taxa_cdi / 100) 
 
     resultado = calcularJurosCompostos(
         valorInicial=valor,
@@ -167,4 +169,4 @@ def simulador_investimento() -> None:
         "resultado_final": round(resultado, 2)
     }
     
-    AdicionarHistorico(email_usuario,"investimento", dados_simulacao)
+   #AdicionarHistorico(email_usuario,"investimento", dados_simulacao)
