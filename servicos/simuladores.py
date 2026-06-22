@@ -19,7 +19,7 @@ __all__ = [
 # FUNÇÕES DE CÁLCULO
 # =========================
 
-def calculaJuros(valor, taxa, tempo):
+def calculaJuros(valor: float, taxa: float, tempo: int) -> float:
     """
     Calcula o montante final utilizando juros compostos.
     """
@@ -32,7 +32,11 @@ def calculaJuros(valor, taxa, tempo):
     )
 
 
-def simulaAcumulacao(aporte_mensal, taxa, meses):
+def simulaAcumulacao(
+    aporte_mensal: float,
+    taxa: float,
+    meses: int
+) -> float:
     """
     Simula a acumulação de patrimônio ao longo do tempo.
     """
@@ -45,7 +49,11 @@ def simulaAcumulacao(aporte_mensal, taxa, meses):
     )
 
 
-def calculaTempoParaAposentar(aporte_mensal, objetivo, taxa):
+def calculaTempoParaAposentar(
+    aporte_mensal: float,
+    objetivo: float,
+    taxa: float
+) -> int:
     """
     Calcula quantos meses são necessários para atingir
     um patrimônio objetivo.
@@ -68,7 +76,10 @@ def calculaTempoParaAposentar(aporte_mensal, objetivo, taxa):
     return meses
 
 
-def calcularValorASerRecebido(patrimonio, anos):
+def calcularValorASerRecebido(
+    patrimonio: float,
+    anos: int
+) -> float:
     """
     Calcula uma estimativa de renda passiva mensal.
     """
@@ -83,7 +94,7 @@ def calcularValorASerRecebido(patrimonio, anos):
 # FUNÇÕES INTEGRADAS AO MENU
 # =========================
 
-def simulador_aposentadoria(aporte, email_usuario):
+def simulador_aposentadoria(aporte: float) -> None:
     """
     Executa uma simulação de aposentadoria utilizando
     a Selic obtida na API do Banco Central.
@@ -121,7 +132,7 @@ def simulador_aposentadoria(aporte, email_usuario):
 
 
 
-def simulador_investimento(email_usuario):
+def simulador_investimento() -> None:
     """
     Executa uma simulação de investimento utilizando
     o CDI obtido na API do Banco Central.
