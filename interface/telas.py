@@ -1,4 +1,4 @@
-from entidades import gerenciadorDeUsuario
+from entidades import CriaUsuario, ConsultaUsuario, AtualizaUsuario
 
 from servicos.simuladores import (
     simulador_aposentadoria,
@@ -8,14 +8,17 @@ from servicos.simuladores import (
 __all__ = ["menuPrincipal"]
 
 
-def menuPrincipal():
+def menuPrincipal() -> None:
 
     while True:
-
+        print("\n")
         print("------ Bem-vindo ao Finance Hub! ------")
         print("1 - Cadastro")
         print("2 - Login")
         print("3 - Sair")
+
+        print("\n")
+
 
         try:
             opcao = int(input("Insira sua opção: "))
@@ -38,16 +41,19 @@ def menuPrincipal():
             print("Opção inválida ! Tente novamente")
 
 
-def menuSistemaLogado(nomeUsuario: str, email: str):
+def menuSistemaLogado(nomeUsuario: str, email: str) -> None:
 
     while True:
 
+        print("\n")
         print(f"------ Olá, {nomeUsuario} ------")
         print("1 - Atualizar dados")
         print("2 - Simulador de Aposentadoria")
         print("3 - Simulador de Investimentos")
-        print("4 - Sair")
-
+        print("4 - Histórico")
+        print("5 - Sair")
+        print("\n")
+        
         try:
             opcao = int(input("Insira sua opção: "))
 
@@ -59,24 +65,59 @@ def menuSistemaLogado(nomeUsuario: str, email: str):
 
             email = AtualizarDadosUsuario(email)
 
-            dados_atualizados = gerenciadorDeUsuario.ConsultaUsuario(email)
+            dados_atualizados = ConsultaUsuario(email)
 
             if dados_atualizados != 1:
                 nomeUsuario = dados_atualizados["nome"]
 
         elif opcao == 2:
 
-            usuario = gerenciadorDeUsuario.ConsultaUsuario(email)
+            usuario = ConsultaUsuario(email)
 
             simulador_aposentadoria(
-                usuario["aporte"]
+                usuario["aporte"], email
             )
 
         elif opcao == 3:
 
-            simulador_investimento()
+            simulador_investimento(email)
 
-        elif opcao == 4:
+        elif opcao == 4: 
+
+            usuario = ConsultaUsuario(email)
+            
+            if usuario == 1:
+                print("Erro ao carregar os dados do usuário.")
+                continue
+                
+            historico = usuario.get("historico", {"aposentadoria": None, "investimento": None})
+            
+            print(f"\n ------ Últimas Simulações de {nomeUsuario} ------\n")
+            
+            if not historico["aposentadoria"] and not historico["investimento"]:
+                print("Você ainda não realizou nenhuma simulação.")
+            else:
+                # Mostrar a última de Aposentadoria
+                if historico["aposentadoria"]:
+                    apo = historico["aposentadoria"]
+                    print(f"[Última Simulação] Tipo: {apo['tipo']}")
+                    print(f"    Taxa Utilizada: {apo['taxa_utilizada']}%")
+                    print(f"    Aporte Mensal: R$ {apo['aporte_mensal']:.2f}")
+                    print(f"    Tempo: {apo['tempo_anos']} anos")
+                    print(f"    -> RESULTADO FINAL: R$ {apo['resultado_final']:.2f}")
+                    print("-" * 40)
+                
+                # Mostrar a última de Investimento
+                if historico["investimento"]:
+                    inv = historico["investimento"]
+                    print(f"[Última Simulação] Tipo: {inv['tipo']}")
+                    print(f"    Taxa Utilizada: {inv['taxa_utilizada']}%")
+                    print(f"    Valor Inicial: R$ {inv['valor_inicial']:.2f}")
+                    print(f"    Tempo: {inv['tempo_meses']} meses")
+                    print(f"    -> RESULTADO FINAL: R$ {inv['resultado_final']:.2f}")
+                    print("-" * 40)
+
+        elif opcao == 5:
 
             print("Obrigada por usar o Finance Hub! Até logo.")
             break
@@ -85,7 +126,7 @@ def menuSistemaLogado(nomeUsuario: str, email: str):
             print("Opção inválida ! Tente novamente")
 
 
-def AtualizarDadosUsuario(email: str):
+def AtualizarDadosUsuario(email: str) -> str:
 
     while True:
 
@@ -94,8 +135,7 @@ def AtualizarDadosUsuario(email: str):
         print("2 - Atualizar nome")
         print("3 - Atualizar idade")
         print("4 - Atualizar aporte")
-        print("5 - Atualizar perfil")
-        print("6 - Sair")
+        print("5 - Voltar ao Menu Principal")
 
         try:
             opcao = int(input("Insira sua opção: "))
@@ -138,14 +178,6 @@ def AtualizarDadosUsuario(email: str):
 
         elif opcao == 5:
 
-            campo = "perfil"
-
-            dado = input(
-                "Digite seu novo perfil de risco (conservador, moderado ou arrojado): "
-            ).strip().lower()
-
-        elif opcao == 6:
-
             return email
 
         else:
@@ -153,7 +185,7 @@ def AtualizarDadosUsuario(email: str):
             print("Opção Inválida!")
             continue
 
-        resultado = gerenciadorDeUsuario.AtualizaUsuario(
+        resultado = AtualizaUsuario(
             email=email,
             campo=campo,
             valor=dado
@@ -177,7 +209,7 @@ def AtualizarDadosUsuario(email: str):
             )
 
 
-def cadastroUsuario():
+def cadastroUsuario() -> None:
 
     print("------CADASTRO USUÁRIO------")
 
@@ -197,20 +229,19 @@ def cadastroUsuario():
     except ValueError:
         print("Aporte deve ser um número decimal!")
         return
+    
+    senha = input("Digite sua senha: ").strip()
 
-    perfil = input(
-        "Digite seu perfil de risco (conservador, moderado ou arrojado): "
-    ).strip().lower()
 
     novoUsuario = {
         "email": email,
         "nome": nome,
         "idade": idade,
         "aporte": aporte,
-        "perfil": perfil
+        "senha": senha, 
     }
 
-    resultado = gerenciadorDeUsuario.CriaUsuario(
+    resultado = CriaUsuario(
         u=novoUsuario,
         email=email
     )
@@ -230,17 +261,23 @@ def cadastroUsuario():
         )
 
 
-def login():
+def login() -> None:
 
     print("------ LOGIN ------")
 
     email = input("Digite seu email: ").strip()
 
-    usuario = gerenciadorDeUsuario.ConsultaUsuario(email)
+    usuario = ConsultaUsuario(email)
 
     if usuario == 1:
 
         print("Email não cadastrado! Cadastre-se primeiro")
+        return
+    
+    senha = input("Digite sua senha: ").strip()
+
+    if senha != usuario.get("senha"):
+        print("Senha incorreta! Acesso negado.")
         return
 
     nome_usuario = usuario["nome"]

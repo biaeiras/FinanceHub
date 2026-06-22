@@ -1,3 +1,11 @@
+
+from servicos.consultor_bcb import obterValorIndicador
+
+from entidades import calcularJurosCompostos, calcularRendaPassiva
+
+
+from entidades.gerenciadorDeUsuario import AdicionarHistorico
+
 __all__ = [
     "simulador_aposentadoria",
     "simulador_investimento",
@@ -7,19 +15,14 @@ __all__ = [
     "calcularValorASerRecebido"
 ]
 
-from servicos.consultor_bcb import obterValorIndicador
-
-from entidades.CalculoFinanceiro import (
-    calcularJurosCompostos,
-    calcularRendaPassiva
-)
-
-
 # =========================
 # FUNÇÕES DE CÁLCULO
 # =========================
 
 def calculaJuros(valor, taxa, tempo):
+    """
+    Calcula o montante final utilizando juros compostos.
+    """
 
     return calcularJurosCompostos(
         valorInicial=valor,
@@ -30,6 +33,9 @@ def calculaJuros(valor, taxa, tempo):
 
 
 def simulaAcumulacao(aporte_mensal, taxa, meses):
+    """
+    Simula a acumulação de patrimônio ao longo do tempo.
+    """
 
     return calcularJurosCompostos(
         valorInicial=0,
@@ -40,6 +46,10 @@ def simulaAcumulacao(aporte_mensal, taxa, meses):
 
 
 def calculaTempoParaAposentar(aporte_mensal, objetivo, taxa):
+    """
+    Calcula quantos meses são necessários para atingir
+    um patrimônio objetivo.
+    """
 
     acumulado = 0
     meses = 1
@@ -59,6 +69,9 @@ def calculaTempoParaAposentar(aporte_mensal, objetivo, taxa):
 
 
 def calcularValorASerRecebido(patrimonio, anos):
+    """
+    Calcula uma estimativa de renda passiva mensal.
+    """
 
     return calcularRendaPassiva(
         valorTotal=patrimonio,
@@ -67,10 +80,14 @@ def calcularValorASerRecebido(patrimonio, anos):
 
 
 # =========================
-# MENU APOSENTADORIA
+# FUNÇÕES INTEGRADAS AO MENU
 # =========================
 
-def simulador_aposentadoria(aporte):
+def simulador_aposentadoria(aporte, email_usuario):
+    """
+    Executa uma simulação de aposentadoria utilizando
+    a Selic obtida na API do Banco Central.
+    """
 
     taxa_selic = obterValorIndicador("selic")
 
@@ -91,12 +108,24 @@ def simulador_aposentadoria(aporte):
     print("\n===== RESULTADO APOSENTADORIA =====")
     print(f"Valor acumulado: R$ {resultado:.2f}")
 
+    dados_simulacao = {
+        "tipo": "Aposentadoria",
+        "aporte_mensal": aporte,
+        "tempo_anos": anos,
+        "taxa_utilizada": taxa_selic,
+        "resultado_final": round(resultado, 2)
+    }
+    
 
-# =========================
-# MENU INVESTIMENTO
-# =========================
+    AdicionarHistorico(email_usuario, "aposentadoria", dados_simulacao)
 
-def simulador_investimento():
+
+
+def simulador_investimento(email_usuario):
+    """
+    Executa uma simulação de investimento utilizando
+    o CDI obtido na API do Banco Central.
+    """
 
     valor = float(input("Valor inicial do investimento: "))
     meses = int(input("Quantidade de meses: "))
@@ -118,3 +147,13 @@ def simulador_investimento():
 
     print("\n===== RESULTADO INVESTIMENTO =====")
     print(f"Valor final: R$ {resultado:.2f}")
+
+    dados_simulacao = {
+        "tipo": "Investimento",
+        "valor_inicial": valor,
+        "tempo_meses": meses,
+        "taxa_utilizada": taxa_cdi,
+        "resultado_final": round(resultado, 2)
+    }
+    
+    AdicionarHistorico(email_usuario,"investimento", dados_simulacao)

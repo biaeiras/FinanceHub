@@ -1,9 +1,19 @@
 {
     "nbianca240@gmail.com": {
         "email": "nbianca240@gmail.com",
-        "nome": "bia",
+        "nome": "Bia",
         "idade": 20,
-        "aporte": 500.0,
-        "perfil": "conservador"
+        "aporte": 1200.0,
+        "senha": "123",
+        "historico": {
+            "aposentadoria": {
+                "tipo": "Aposentadoria",
+                "aporte_mensal": 1200.0,
+                "tempo_anos": 12,
+                "taxa_utilizada": 10.5,
+                "resultado_final": 343700.99
+            },
+            "investimento": null
+        }
     }
 }
